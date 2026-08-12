@@ -3,235 +3,299 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AROMANO: Campaign Growth Projection</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <title>Aromano Campaign Analytics | Projected Growth</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --obsidian-base: #0A0A0A;
-            --deep-space: #1A1A1A;
-            --electric-purple: #BF00FF;
-            --lime-green: #32CD32;
-            --hot-pink: #FF69B4;
-            --pure-white: #FFFFFF;
-            --muted-silver: #A0A0A0;
+            --color-bg: #F2F2F2;
+            --color-text: #333333;
+            --color-muted: #DBCBBD;
+            --color-highlight: #BCAE9E;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Inter', sans-serif;
         }
 
         body {
-            background-color: var(--obsidian-base);
-            color: var(--pure-white);
-            font-family: 'Inter', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: var(--font-body);
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        header {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .logo-placeholder {
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: block;
         }
 
         h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3rem;
-            text-align: center;
-            margin: 40px 0 20px 0;
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            font-weight: 500;
+            margin: 0 0 20px 0;
         }
 
-        .banner {
-            background-color: var(--hot-pink);
-            color: var(--obsidian-base);
-            width: 100%;
-            text-align: center;
-            padding: 15px 0;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+        .notice-banner {
+            background-color: var(--color-muted);
+            color: var(--color-text);
+            padding: 10px 20px;
+            font-size: 0.85rem;
+            display: inline-block;
+            border-radius: 2px;
+            opacity: 0.8;
+            font-weight: 300;
         }
 
-        .container {
-            max-width: 1200px;
-            width: 90%;
-            margin-bottom: 60px;
-        }
-
-        .charts-grid {
+        .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto 60px auto;
+            padding: 0 20px;
         }
 
         .chart-card {
-            background-color: var(--deep-space);
-            border: 1px solid var(--electric-purple);
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(191, 0, 255, 0.1);
+            background: white;
+            padding: 30px;
+            border: 1px solid var(--color-muted);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            transition: transform 0.3s ease;
         }
 
-        .chart-card h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            color: var(--pure-white);
+        .chart-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .chart-card h3 {
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+            margin: 0 0 20px 0;
+            font-weight: 500;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+
+        .table-section {
+            max-width: 1100px;
+            margin: 0 auto 100px auto;
+            padding: 0 20px;
+        }
+
+        .table-section h2 {
+            font-family: var(--font-heading);
             text-align: center;
-        }
-
-        .table-container {
-            background-color: var(--deep-space);
-            border-radius: 8px;
-            padding: 20px;
-            overflow-x: auto;
-            border: 1px solid var(--electric-purple);
+            margin-bottom: 30px;
+            font-weight: 500;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            text-align: left;
+            background: white;
+            border: 1px solid var(--color-muted);
         }
 
         th {
-            color: var(--muted-silver);
-            font-weight: 600;
-            padding: 12px;
-            border-bottom: 2px solid var(--electric-purple);
+            text-align: left;
+            padding: 15px;
+            font-family: var(--font-heading);
+            border-bottom: 2px solid var(--color-muted);
+            font-weight: 500;
         }
 
         td {
-            padding: 12px;
-            border-bottom: 1px solid rgba(191, 0, 255, 0.2);
+            padding: 15px;
+            border-bottom: 1px solid var(--color-muted);
+            font-weight: 300;
         }
 
-        tr:nth-child(even) {
-            background-color: var(--obsidian-base);
+        tr:hover td {
+            background-color: #fafafa;
+            transition: background 0.2s ease;
         }
 
         @media (max-width: 768px) {
-            h1 { font-size: 2rem; }
-            .charts-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 1.8rem; }
+            .dashboard-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <div class="banner">
-        PROJECTED DATA: This dashboard contains simulated estimates for strategic planning purposes.
-    </div>
+    <header>
+        <span class="logo-placeholder">Aromano</span>
+        <h1>Campaign Analytics</h1>
+        <div class="notice-banner">
+            This dashboard displays simulated/projected estimates for planning purposes.
+        </div>
+    </header>
 
-    <h1>AROMANO: Campaign Growth Projection</h1>
-
-    <div class="container">
-        <div class="charts-grid">
+    <main>
+        <div class="dashboard-grid">
             <div class="chart-card">
-                <h2>Traffic Growth</h2>
-                <canvas id="trafficChart"></canvas>
+                <h3>Projected Visitors</h3>
+                <div class="chart-container">
+                    <canvas id="visitorsChart"></canvas>
+                </div>
             </div>
             <div class="chart-card">
-                <h2>Conversion Volume</h2>
-                <canvas id="conversionChart"></canvas>
+                <h3>Projected Conversions</h3>
+                <div class="chart-container">
+                    <canvas id="conversionsChart"></canvas>
+                </div>
             </div>
             <div class="chart-card">
-                <h2>Churn Analysis</h2>
-                <canvas id="churnChart"></canvas>
+                <h3>Projected Churn Rate</h3>
+                <div class="chart-container">
+                    <canvas id="churnChart"></canvas>
+                </div>
             </div>
         </div>
 
-        <div class="table-container">
+        <section class="table-section">
+            <h2>Simulated Data Set</h2>
             <table>
                 <thead>
                     <tr>
                         <th>Month</th>
                         <th>Visitors</th>
                         <th>Conversions</th>
-                        <th>Conv. Rate</th>
+                        <th>Conversion Rate</th>
                         <th>Churn Rate</th>
                     </tr>
                 </thead>
                 <tbody id="dataTableBody">
+                    <!-- Injected by JS -->
                 </tbody>
             </table>
-        </div>
-    </div>
+        </section>
+    </main>
 
     <script>
-        const data = [
-            { month: 'Month 1', visitors: 1693, conversions: 37, convRate: '2.2%', churnRate: 6.5 },
-            { month: 'Month 2', visitors: 1896, conversions: 40, convRate: '2.1%', churnRate: 6.1 },
-            { month: 'Month 3', visitors: 2105, conversions: 46, convRate: '2.2%', churnRate: 5.8 },
-            { month: 'Month 4', visitors: 2316, conversions: 58, convRate: '2.5%', churnRate: 5.6 },
-            { month: 'Month 5', visitors: 2524, conversions: 58, convRate: '2.3%', churnRate: 5.5 },
-            { month: 'Month 6', visitors: 2726, conversions: 63, convRate: '2.3%', churnRate: 5.5 },
+        const dataSet = [
+            { month: 'Month 1', visitors: 1581, conversions: 35, convRate: '2.2%', churn: 6.5 },
+            { month: 'Month 2', visitors: 1739, conversions: 38, convRate: '2.2%', churn: 6.3 },
+            { month: 'Month 3', visitors: 1948, conversions: 49, convRate: '2.5%', churn: 5.9 },
+            { month: 'Month 4', visitors: 2123, conversions: 51, convRate: '2.4%', churn: 5.8 },
+            { month: 'Month 5', visitors: 2357, conversions: 61, convRate: '2.6%', churn: 5.5 },
+            { month: 'Month 6', visitors: 2546, conversions: 61, convRate: '2.4%', churn: 5.5 },
         ];
 
-        const tbody = document.getElementById('dataTableBody');
-        data.forEach(row => {
+        // Populate Table
+        const tableBody = document.getElementById('dataTableBody');
+        dataSet.forEach(row => {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td>${row.month}</td><td>${row.visitors}</td><td>${row.conversions}</td><td>${row.convRate}</td><td>${row.churnRate}%</td>`;
-            tbody.appendChild(tr);
+            tr.innerHTML = `
+                <td>${row.month}</td>
+                <td>${row.visitors}</td>
+                <td>${row.conversions}</td>
+                <td>${row.convRate}</td>
+                <td>${row.churn}%</td>
+            `;
+            tableBody.appendChild(tr);
         });
 
-        const chartDefaults = {
+        // Chart Configs
+        const commonOptions = {
             responsive: true,
-            plugins: {
-                legend: { labels: { color: '#A0A0A0', font: { family: 'Inter' } } }
-            },
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
             scales: {
-                x: {
-                    grid: { color: 'rgba(160, 160, 160, 0.1)' },
-                    ticks: { color: '#A0A0A0' }
+                x: { 
+                    grid: { display: false },
+                    ticks: { font: { family: 'Inter' } }
                 },
-                y: {
-                    grid: { color: 'rgba(160, 160, 160, 0.1)' },
-                    ticks: { color: '#A0A0A0' }
+                y: { 
+                    beginAtZero: false,
+                    grid: { color: '#EAEAEA' },
+                    ticks: { font: { family: 'Inter' } }
                 }
+            },
+            elements: {
+                line: { tension: 0.4 }
             }
         };
 
-        new Chart(document.getElementById('trafficChart'), {
+        // Visitors Chart
+        new Chart(document.getElementById('visitorsChart'), {
             type: 'line',
             data: {
-                labels: data.map(d => d.month),
+                labels: dataSet.map(d => d.month),
                 datasets: [{
-                    label: 'Visitors',
-                    data: data.map(d => d.visitors),
-                    borderColor: '#BF00FF',
-                    backgroundColor: 'rgba(191, 0, 255, 0.1)',
-                    tension: 0.4,
-                    fill: true
+                    data: dataSet.map(d => d.visitors),
+                    borderColor: '#333333',
+                    backgroundColor: 'rgba(219, 203, 189, 0.3)',
+                    fill: true,
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#333333'
                 }]
             },
-            options: chartDefaults
+            options: commonOptions
         });
 
-        new Chart(document.getElementById('conversionChart'), {
-            type: 'bar',
+        // Conversions Chart
+        new Chart(document.getElementById('conversionsChart'), {
+            type: 'line',
             data: {
-                labels: data.map(d => d.month),
+                labels: dataSet.map(d => d.month),
                 datasets: [{
-                    label: 'Conversions',
-                    data: data.map(d => d.conversions),
-                    backgroundColor: '#32CD32'
+                    data: dataSet.map(d => d.conversions),
+                    borderColor: '#BCAE9E',
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#BCAE9E'
                 }]
             },
-            options: chartDefaults
+            options: commonOptions
         });
 
+        // Churn Chart
         new Chart(document.getElementById('churnChart'), {
             type: 'line',
             data: {
-                labels: data.map(d => d.month),
+                labels: dataSet.map(d => d.month),
                 datasets: [{
-                    label: 'Churn Rate %',
-                    data: data.map(d => d.churnRate),
-                    borderColor: '#FF69B4',
-                    backgroundColor: 'rgba(255, 105, 180, 0.1)',
-                    tension: 0.4,
-                    fill: true
+                    data: dataSet.map(d => d.churn),
+                    borderColor: '#333333',
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#333333'
                 }]
             },
-            options: chartDefaults
+            options: {
+                ...commonOptions,
+                scales: {
+                    ...commonOptions.scales,
+                    y: {
+                        ...commonOptions.scales.y,
+                        ticks: {
+                            callback: value => value + '%'
+                        }
+                    }
+                }
+            }
         });
     </script>
 </body>
